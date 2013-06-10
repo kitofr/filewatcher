@@ -41,15 +41,25 @@ if(ARGV.length == 1)
   files << ARGV[0]
 end
 
+def included_files
+  @inc = Dir.glob(File.join(base, options[:include])) unless @inc
+  @inc
+end
+
+def excluded_files
+  @exc = Dir.glob(File.join(base, options[:exclude])) unless @exc
+  @exc
+end
+
 if(options[:recurse])
   base = File.join(options[:recurse], "**")
-  inc = Dir.glob(File.join(base, options[:include]))
-  exc = Dir.glob(File.join(base, options[:exclude]))
-  files = inc - exc
+  files = included_files - excluded_files
 end
 
 if(options[:list])
   puts "watching:", files.inspect
+  puts "excluded:", excluded_files
+  puts "--------------------------------------------------------------------------"
 end
 
 runners = {".py" => "python", ".rb" => "ruby", ".pl" => "perl", ".awk" => "awk"}
