@@ -39,6 +39,9 @@ end
 Trollop::die "must have at least one argument" if(ARGV.size == 0)
 
 files = []
+included_files = []
+excluded_files = []
+
 ARGV[0...-1].each do |a|
   files << a
 end
@@ -47,24 +50,17 @@ if(ARGV.length == 1)
   files << ARGV[0]
 end
 
-def included_files
-  @inc = Dir.glob(File.join(base, options[:include])) unless @inc
-  @inc
-end
-
-def excluded_files
-  @exc = Dir.glob(File.join(base, options[:exclude])) unless @exc
-  @exc
-end
-
 if(options[:recurse])
   base = File.join(options[:recurse], "**")
+  included_files = Dir.glob(File.join(base, options[:include]))
+  excluded_files = Dir.glob(File.join(base, options[:exclude])) 
   files = included_files - excluded_files
 end
 
 if(options[:list])
-  puts "watching:", files.inspect
-  puts "excluded:", excluded_files
+  puts "watching: ", files.inspect
+  puts "--------------------------------------------------------------------------"
+  puts "excluded: ", excluded_files
   puts "--------------------------------------------------------------------------"
 end
 
