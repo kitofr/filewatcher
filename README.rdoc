@@ -2,6 +2,12 @@
 
 Simple file watcher. Monitors changes in files by polling.
 
+= Install
+
+Needs Ruby and Rubygems:
+
+   $ gem install filewatcher
+
 = Command line utility
 
 Filewatcher scans filesystem and execute shell commands when files changes.
@@ -18,20 +24,42 @@ Run the echo command when the file myfile is changed:
 
    $ filewatcher "myfile" "echo 'myfile has changed'"
 
-Run the ruby script when it is changed (works with ruby, perl, python and awk):
+Run any javascript in current folder when it is updated on Linux/OSX:
+   $ filewatcher *.js "node $FILENAME"
 
-   $ filewatcher -r ruby-script.rb
+In Windows Powershell:
 
-At 2 seconds intervall check all files matching *.rb and ../src/*.rb, and run "ruby run_tests.rb".
+    > filewatcher *.js "node %FILENAME%" 
 
-   $ filewatcher -i 2 "*.rb ../src/*.rb" "ruby run_tests.rb"
+Run the ruby script when it is changed:
 
-Options:
-  --interval, -i <f>:   Interval to scan filesystem. Defaults to 0.5 seconds.
-           --run, -r:   Run file as a program when file is updated.
+   $ filewatcher -e ruby-script.rb
+
+Works with ruby, perl, python and awk by detecting file extensions.
+
+Print a list of all files matching *.css first and the print filename when a file is beeing updated:
+
+   $ filewatcher -l *.css 'echo file: $FILENAME'
+
+= Available enviroment variables
+
+The environment variable $FILENAME is available in the command. On unix like systems the command
+has to be enclosed in single quotes. To run node whenever a javascript file is update:
+
+   $ filewatcher *.js 'node $FILENAME'
+
+The environment variables $FILEPATH and $FILEDIR is also available.
+
+= Commnd line options
+
+  --interval, -i <f>:   Interval in seconds to scan filesystem. Defaults to 0.5 seconds.
+          --exec, -e:   Execute file as a script when file is updated.
+   --recurse, -r <s>:   Recurse into the directory, watching everything matching 'expression'
+   --include, -n <s>:   Include files (default: *)
+   --exclude, -x <s>:   Exclude file(s) matching (default: "")
+          --list, -l:   Print name of files being watched
        --version, -v:   Print version and exit
           --help, -h:   Show this message
-
 
 = Install
 
@@ -65,12 +93,17 @@ To check for changes more often than once every second:
     puts "Updated " + filename
   end
 
+= TODO
+
+The Ruby API is fairly well tested but the command line program is buggy at the time beeing.
 
 = Credits
 
 Code inspired by Tom Lieber's blogg posting: http://alltom.com/pages/detecting-file-changes-with-ruby
 
 Find method by c00lrguy: http://snippets.dzone.com/posts/show/5457
+
+Globbing by Kristoffer Roupé https://github.com/kitofr
 
 == Note on Patches/Pull Requests
 
@@ -85,4 +118,4 @@ Find method by c00lrguy: http://snippets.dzone.com/posts/show/5457
 
 == Copyright
 
-Copyright (c) 2011 Thomas Flemming. See LICENSE for details.
+Copyright (c) 2011 - 2013 Thomas Flemming. See LICENSE for details.
