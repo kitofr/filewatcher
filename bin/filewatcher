@@ -1,11 +1,17 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'filewatcher'
+
+@@root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+require File.join(@@root, 'lib', 'filewatcher')
 require 'trollop'
 require 'pathname'
 
+def get_version
+  File.read(File.join(@@root, 'VERSION')).strip
+end
+
 options = Trollop::options do
-  version "filewatcher, version 0.1.8 by Thomas Flemming 2011"
+  version "filewatcher, version #{get_version} by Thomas Flemming 2011"
   banner <<-EOS
 Filewatcher scans filesystem and execute shell commands when files changes.
 
